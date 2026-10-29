@@ -1,0 +1,64 @@
+# PyMARL / pymarl2 env config for StratagemDSL maps -> put in src/config/envs/sc2te_strat.yaml
+# and register the env (see README, "PyMARL"):  python src/main.py --config=qmix --env-config=sc2te_strat \
+#     with env_args.scenario=/abs/path/build/sc2te/dhls_18_enter_signal
+env: sc2te_strat
+
+env_args:
+  scenario: null              # REQUIRED: folder or *.sc2te.json written by tools/strat2sc2te.py
+  map_name: null              # registry name, default strat_<stem>
+  step_mul: null              # null -> spec (8)
+  episode_limit: null         # null -> spec's suggestion (from the map size)
+  difficulty: "1"             # built-in AI of player 2; the map script commands the enemy
+  engine: "sc2"               # "fake" = StratagemDSL's PlanSim, no SC2 (debug only)
+  game_version: null
+  seed: null
+  move_amount: 2
+  continuing_episode: False
+  # observations / state
+  obs_all_health: True
+  obs_own_health: True
+  obs_last_action: False
+  obs_pathing_grid: False
+  obs_terrain_height: False
+  obs_instead_of_state: False
+  obs_timestep_number: False
+  obs_own_position: True
+  obs_regions: True           # offsets to the strategy's named regions
+  obs_plan_phase: False       # needs StratagemDSL
+  state_last_action: True
+  state_timestep_number: False
+  state_plan_phase: False
+  # actions
+  region_actions: True        # move to each named region
+  region_action: "move"       # or "attack" (attack-move)
+  force_actions: True         # attack-move to each enemy force/asset
+  ability_actions: []         # e.g. ["burrow_down", "burrow_up"], see ABILITY_PRESETS
+  min_shoot_range: 6.0
+  # rewards / termination
+  reward_sparse: False
+  reward_only_positive: True
+  reward_death_value: 10
+  reward_win: 200
+  reward_defeat: 0
+  reward_negative_scale: 0.5
+  reward_scale: True
+  reward_scale_rate: 20
+  reward_phase: 0.0           # plan-phase shaping bonus, needs StratagemDSL
+  reward_tuple: False         # False: scalar reward (vanilla PyMARL / pymarl2 episode_runner)
+                              # True : (reward, delta_enemy, delta_deaths, delta_ally) -- runners patched for sc2te,
+                              #        i.e. episode_runner.py has `reward, delta_enemy, delta_deaths, delta_ally = reward`
+  termination: "intent"       # intent | plan | army
+  defeat_on_army_loss: True
+  plan_tracking: "auto"
+  info_detail: False          # keep False with PyMARL: its runner sums every info value
+  replay_dir: ""
+  replay_prefix: ""
+  debug: False
+
+test_greedy: True
+test_nepisode: 32
+test_interval: 10000
+log_interval: 10000
+runner_log_interval: 10000
+learner_log_interval: 10000
+t_max: 2050000
